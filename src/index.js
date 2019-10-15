@@ -123,6 +123,9 @@ export default class {
 
     touch[id][type] = target
 
+    this.dispatch(ev)
+
+    // after normally dispatch
     if (type === 'pointermove' && last && last !== target) {
       const ne = {...ev}
       ne.type = 'pointerout'
@@ -138,10 +141,14 @@ export default class {
         ne.type = 'pointerupoutside'
         ne.target = last
         this.dispatch(ne)
+      } else if (last === target) {
+        const ne = {...ev}
+        ne.type = 'tap'
+        ne.target = target
+        this.dispatch(ne)
       }
     }
 
-    this.dispatch(ev)
   }
 
   dispatch(ev) {

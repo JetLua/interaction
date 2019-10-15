@@ -1,4 +1,4 @@
-# tilemap
+# Interaction
 The interaction plugin for pixi.js.
 
 ## Install

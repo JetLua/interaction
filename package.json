@@ -1,0 +1,46 @@
+{
+  "name": "@iro/interaction",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/interaction.min.js",
+  "module": "dist/interaction.es.js",
+  "browserslist": [
+    "android >= 5",
+    "ios >= 8"
+  ],
+  "scripts": {
+    "build": "rm -fr dist & rollup -c",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JetLua/interaction.git"
+  },
+  "keywords": [
+    "pixi.js",
+    "plugin",
+    "interaction"
+  ],
+  "author": "JetLu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JetLua/interaction/issues"
+  },
+  "homepage": "https://github.com/JetLua/interaction#readme",
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-export-default-from": "^7.5.2",
+    "@babel/plugin-proposal-export-namespace-from": "^7.5.2",
+    "@babel/plugin-proposal-optional-chaining": "^7.6.0",
+    "@babel/plugin-proposal-private-methods": "^7.4.4",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/runtime": "^7.5.5",
+    "@babel/runtime-corejs3": "^7.5.5",
+    "rollup": "^1.18.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-babel-minify": "^9.0.0",
+    "rollup-plugin-commonjs": "^10.0.2",
+    "rollup-plugin-node-resolve": "^5.2.0"
+  }
+}

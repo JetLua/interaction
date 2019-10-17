@@ -7,6 +7,10 @@ The interaction plugin for pixi.js.
 npm i @iro/interaction
 ```
 
+## Why Use It
+1. Unified event type, `Pointer` event only.
+2. `Pointerout` and `Pointerupoutside` have `target` value.
+
 ## Usage
 
 ```js

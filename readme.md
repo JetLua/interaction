@@ -1,4 +1,7 @@
 # Interaction
+[![npm version](https://img.shields.io/npm/v/@iro/interaction.svg?style=flat&colorB=brightgreen)](https://www.npmjs.com/package/@iro/interaction)
+[![npm downloads](https://img.shields.io/npm/dm/@iro/interaction.svg?style=flat&colorB=brightgreen)](https://www.npmjs.com/package/@iro/interaction)
+
 The interaction plugin for pixi.js.
 
 ## Install

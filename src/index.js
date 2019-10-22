@@ -84,8 +84,18 @@ export default class {
     this.copyEvent(ev)
   }
 
-  contains(node) {
+  /**
+   * @param {boolean} hitOnly - 只验证 hitArea
+   */
+  contains(node, hitOnly) {
     let ok = false
+
+    if (hitOnly) {
+      if (node.hitArea) {
+        node.worldTransform.applyInverse(sp, lp)
+        return node.hitArea.contains(sp)
+      } else return true
+    }
 
     if (node.hitArea) {
       node.worldTransform.applyInverse(sp, lp)
@@ -158,13 +168,10 @@ export default class {
   }
 
   dispatch(ev) {
-    let {
-      target,
-      x, y
-    } = ev
+    let {target, x, y} = ev
 
     while(target && target.interactive && !ev.stopped) {
-      let hit = this.contains(target)
+      let hit = this.contains(target, true)
       if (hit) {
         ev.currentTarget = target
         target.emit(ev.type, ev)

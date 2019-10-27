@@ -1,18 +1,19 @@
 const
   touch = {},
+  event = {},
   sp = new PIXI.Point(),
   lp = new PIXI.Point(),
   pointerable = 'onpointerdown' in window,
   touchable = 'ontouchstart' in window
 
-let event = {}
-
-export default class {
+export default class extends PIXI.utils.EventEmitter {
   #renderer = null
   #view = null
   #resolution = 1
 
   constructor(renderer, opt) {
+    super()
+
     this.#renderer = renderer
     this.#view = renderer.view
     this.#resolution = renderer.resolution
@@ -169,6 +170,8 @@ export default class {
 
   dispatch(ev) {
     let {target, x, y} = ev
+
+    this.emit(ev.type, ev)
 
     while(target && target.interactive && !ev.stopped) {
       let hit = this.contains(target, true)

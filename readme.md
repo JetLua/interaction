@@ -20,4 +20,16 @@ npm i @iro/interaction
 import Interaction from '@iro/interaction'
 
 PIXI.Renderer.registerPlugin('interaction', Interaction)
+
+renderer.plugins.interaction.on('pointerdown', ev => {})
+sprite.on('pointerup', ev => {})
+
+/**
+ * - tap
+ * - pointerup
+ * - pointerout
+ * - pointermove
+ * - pointerdown
+ * - pointerupoutside
+*/
 ```

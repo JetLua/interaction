@@ -1,6 +1,6 @@
 {
   "name": "@iro/interaction",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/interaction.min.js",
   "module": "dist/interaction.es.js",
@@ -37,7 +37,7 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/runtime": "^7.5.5",
     "@babel/runtime-corejs3": "^7.5.5",
-    "rollup": "^1.25.2",
+    "rollup": "^1.26.0",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-babel-minify": "^9.0.0",
     "rollup-plugin-commonjs": "^10.0.2",

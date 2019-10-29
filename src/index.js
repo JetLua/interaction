@@ -127,7 +127,7 @@ export default class extends PIXI.utils.EventEmitter {
           if (child.interactive) {
             ev.target = child
             break
-          } else break
+          } else continue
         }
       }
     }

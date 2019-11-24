@@ -30,6 +30,7 @@ sprite.on('pointerup', ev => {})
  * - pointerout
  * - pointermove
  * - pointerdown
+ * - pointerenter
  * - pointerupoutside
 */
 ```

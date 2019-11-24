@@ -7,18 +7,19 @@ const
   touchable = 'ontouchstart' in window
 
 export default class extends PIXI.utils.EventEmitter {
-  #renderer = null
   #view = null
+  #cursor = null
   #resolution = 1
+  #renderer = null
 
   constructor(renderer, opt) {
     super()
 
     this.#renderer = renderer
     this.#view = renderer.view
-    this.#resolution = renderer.resolution
-
     this.#view.style.touchAction = 'none'
+    this.#resolution = renderer.resolution
+    this.#cursor = renderer.view.style.cursor
 
     this.addEvents()
   }
@@ -142,13 +143,28 @@ export default class extends PIXI.utils.EventEmitter {
 
     this.dispatch(ev)
 
+    // set custom cursor
+    if (type === 'pointermove' && last !== target) {
+      this.#view.style.cursor = target && target.cursor || this.#cursor
+    }
+
     // after normally dispatch
-    if (type === 'pointermove' && last && last !== target) {
-      const ne = {...ev}
+    if (type === 'pointermove' && last !== target) {
+      // enter current
+      let ne = {...ev}
+      ne.type = 'pointerenter'
+      this.dispatch(ne)
+
+      if (!last) return
+
+      // out last
+      ne = {...ev}
       ne.type = 'pointerout'
       ne.target = last
       this.dispatch(ne)
-    } else if (type === 'pointerup') {
+    }
+
+    if (type === 'pointerup') {
       const last = touch[id]['pointerdown']
 
       delete touch[id]

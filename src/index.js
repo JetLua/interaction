@@ -1,10 +1,9 @@
-const
-  touch = {},
-  event = {},
-  sp = new PIXI.Point(),
-  lp = new PIXI.Point(),
-  pointerable = 'onpointerdown' in window,
-  touchable = 'ontouchstart' in window
+const touch = {}
+const event = {}
+const sp = new PIXI.Point()
+const lp = new PIXI.Point()
+const pointerable = 'onpointerdown' in window
+const touchable = 'ontouchstart' in window
 
 export default class extends PIXI.utils.EventEmitter {
   #view = null
@@ -25,21 +24,19 @@ export default class extends PIXI.utils.EventEmitter {
   }
 
   mapPositionToPoint(point, x, y) {
-    const
-      view = this.#view,
-      resolution = this.#resolution,
-      rect = view.parentElement ? view.getBoundingClientRect() : {x: 0, y: 0, width: 0, height: 0}
-
+    const view = this.#view
+    const resolution = this.#resolution
     const resolutionMultiplier = 1 / resolution
+    const rect = view.parentElement ? view.getBoundingClientRect() : {x: 0, y: 0, width: 0, height: 0}
 
     point.x = ((x - rect.left) * (view.width / rect.width)) * resolutionMultiplier
     point.y = ((y - rect.top) * (view.height / rect.height)) * resolutionMultiplier
   }
 
   copyEvent(ev) {
-    const
-      {changedTouches} = ev,
-      renderer = this.#renderer
+    const {changedTouches} = ev
+    const renderer = this.#renderer
+    const root = renderer._lastObjectRendered
 
     if (changedTouches) {
       for (const touch of changedTouches) {
@@ -49,7 +46,8 @@ export default class extends PIXI.utils.EventEmitter {
         event.id = touch.identifier
         event.x = sp.x
         event.y = sp.y
-        this.handle(event, renderer._lastObjectRendered)
+        event.target = this.hitTest(sp, root)
+        this.handle(event, root)
       }
     } else {
       this.mapPositionToPoint(sp, ev.pageX, ev.pageY)
@@ -58,7 +56,8 @@ export default class extends PIXI.utils.EventEmitter {
       event.id = ev.pointerId
       event.x = sp.x
       event.y = sp.y
-      this.handle(event, renderer._lastObjectRendered)
+      event.target = this.hitTest(sp, root)
+      this.handle(event, root)
     }
   }
 
@@ -89,49 +88,56 @@ export default class extends PIXI.utils.EventEmitter {
   /**
    * @param {boolean} hitOnly - 只验证 hitArea
    */
-  contains(node, hitOnly) {
+  contains(point, node, hitOnly) {
     let ok = false
 
     if (hitOnly) {
       if (node.hitArea) {
-        node.worldTransform.applyInverse(sp, lp)
-        return node.hitArea.contains(sp)
+        node.worldTransform.applyInverse(point, lp)
+        return node.hitArea.contains(point)
       } else return true
     }
 
     if (node.hitArea) {
-      node.worldTransform.applyInverse(sp, lp)
+      node.worldTransform.applyInverse(point, lp)
       ok = node.hitArea.contains(lp.x, lp.y)
     } else if (node.containsPoint) {
-      ok = node.containsPoint(sp)
+      ok = node.containsPoint(point)
     }
 
     if (ok && node._mask && node._mask.containsPoint) {
-      ok = node._mask.containsPoint(sp)
+      ok = node._mask.containsPoint(point)
     }
 
     return ok
   }
 
-  handle(ev, node) {
-    if (!node || !node.visible) return
+  hitTest(point, root) {
+    let queue = [root || this.renderer._lastObjectRendered]
+    let target = null
 
-    let queue = [node]
+    while (queue.length) {
+      const child = queue.pop()
 
-    if (node.interactiveChildren && node.children) {
-      while (queue.length) {
-        const child = queue.pop()
-        if (!child.visible) continue
-        queue = (child.children && child.interactiveChildren) ? queue.concat(child.children) : 0
-        const contained = this.contains(child)
-        if (contained) {
-          if (child.interactive) {
-            ev.target = child
-            break
-          } else continue
-        }
+      if (!child.visible) continue
+
+      queue = child.children && child.interactiveChildren && queue.concat(child.children)
+
+      const contained = this.contains(point, child)
+
+      if (contained) {
+        if (child.interactive) target = child
+        if (child.children) queue = [...child.children]
+        else break
       }
     }
+
+
+    return target
+  }
+
+  handle(ev, node) {
+    if (!node || !node.visible) return
 
     const {id, target, type} = ev
 
@@ -189,12 +195,9 @@ export default class extends PIXI.utils.EventEmitter {
 
     this.emit(ev.type, ev)
 
-    while(target && target.interactive && !ev.stopped) {
-      let hit = this.contains(target, true)
-      if (hit) {
-        ev.currentTarget = target
-        target.emit(ev.type, ev)
-      }
+    while(target && !ev.stopped) {
+      ev.currentTarget = target
+      target.emit(ev.type, ev)
       target = target.parent
     }
   }

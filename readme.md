@@ -17,6 +17,15 @@ npm i @iro/interaction
 ## Usage
 
 ```js
+// webpack.config.js
+plugins: [
+  new webpack.ProvidePlugin({
+    PIXI: 'pixi.js'
+  })
+]
+```
+
+```js
 import Interaction from '@iro/interaction'
 
 PIXI.Renderer.registerPlugin('interaction', Interaction)

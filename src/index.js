@@ -103,6 +103,11 @@ export default class extends PIXI.utils.EventEmitter {
       ok = node.hitArea.contains(lp.x, lp.y)
     } else if (node.containsPoint) {
       ok = node.containsPoint(point)
+    } else if (node.children?.length) {
+      for (const child of node.children) {
+        ok = this.contains(point, child)
+        if (ok) break
+      }
     }
 
     if (ok && node._mask && node._mask.containsPoint) {
@@ -123,7 +128,7 @@ export default class extends PIXI.utils.EventEmitter {
 
       queue = child.children && child.interactiveChildren && queue.concat(child.children)
 
-      const contained = this.contains(point, child)
+      const contained = this.contains(point, child) || this.#hit(point, child)
 
       if (contained) {
         if (child.interactive) target = child
@@ -132,8 +137,24 @@ export default class extends PIXI.utils.EventEmitter {
       }
     }
 
-
     return target
+  }
+
+  // 源于对递归对不信任
+  #hit(point, container) {
+    let queue = [container]
+
+    while (queue.length) {
+      const child = queue.pop()
+
+      if (!child.visible) continue
+
+      queue = child.children && child.interactiveChildren && queue.concat(child.children)
+
+      const contained = this.contains(point, child)
+
+      if (contained) return true
+    }
   }
 
   handle(ev, node) {

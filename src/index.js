@@ -214,13 +214,13 @@ export default class extends PIXI.utils.EventEmitter {
   dispatch(ev) {
     let {target, x, y} = ev
 
-    this.emit(ev.type, ev)
-
     while(target && !ev.stopped) {
       ev.currentTarget = target
       target.emit(ev.type, ev)
       target = target.parent
     }
+
+    this.emit(ev.type, ev)
   }
 
   addEvents() {

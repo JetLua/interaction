@@ -91,6 +91,8 @@ export default class extends PIXI.utils.EventEmitter {
   contains(point, node, hitOnly) {
     let ok = false
 
+    if (node.isMask) return ok
+
     if (hitOnly) {
       if (node.hitArea) {
         node.worldTransform.applyInverse(point, lp)
@@ -103,11 +105,6 @@ export default class extends PIXI.utils.EventEmitter {
       ok = node.hitArea.contains(lp.x, lp.y)
     } else if (node.containsPoint) {
       ok = node.containsPoint(point)
-    } else if (node.children?.length) {
-      for (const child of node.children) {
-        ok = this.contains(point, child)
-        if (ok) break
-      }
     }
 
     if (ok && node._mask && node._mask.containsPoint) {
@@ -140,7 +137,7 @@ export default class extends PIXI.utils.EventEmitter {
     return target
   }
 
-  // 源于对递归对不信任
+  // 源于对递归的不信任
   #hit(point, container) {
     let queue = [container]
 

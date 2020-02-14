@@ -91,7 +91,7 @@ export default class extends PIXI.utils.EventEmitter {
   contains(point, node, hitOnly) {
     let ok = false
 
-    if (node.isMask) return ok
+    if (node.isMask || !node.interactive) return ok
 
     if (hitOnly) {
       if (node.hitArea) {
@@ -128,8 +128,8 @@ export default class extends PIXI.utils.EventEmitter {
       const contained = this.contains(point, child) || this.#hit(point, child)
 
       if (contained) {
-        if (child.interactive) target = child
-        if (child.children) queue = [...child.children]
+        child.interactive && (target = child)
+        if (child.children) queue = queue.concat(child.children)
         else break
       }
     }

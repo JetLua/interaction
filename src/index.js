@@ -220,6 +220,7 @@ export default class extends PIXI.utils.EventEmitter {
 
     while(target && !ev.stopped) {
       ev.currentTarget = target
+      target.interactive &&
       target.emit(ev.type, ev)
       target = target.parent
     }

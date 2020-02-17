@@ -1,4 +1,3 @@
-
 const touch = {}
 const event = {}
 const sp = new PIXI.Point()
@@ -132,9 +131,12 @@ export default class extends PIXI.utils.EventEmitter {
       const contained = this.contains(point, child) || this.#hit(point, child)
 
       if (contained) {
-        child.interactive && (target = child)
-        if (child.children && child.children.length) queue = queue.concat(child.children)
-        else if (child.interactive) break
+        const children = child.children && child.children.length && child.children
+        if (child.interactive) {
+          target = child
+          if (children) queue = children.slice(0)
+          else break
+        } else if (children) queue = queue.concat(children)
       }
     }
 

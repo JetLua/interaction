@@ -123,21 +123,16 @@ export default class extends PIXI.utils.EventEmitter {
 
       if (!child.visible) continue
 
-      child.children &&
-      child.children.length &&
-      child.interactiveChildren &&
-      (queue = queue.concat(child.children))
-
+      const children = child.interactiveChildren && child.children
       const contained = this.contains(point, child) || this.#hit(point, child)
 
-      if (contained) {
-        const children = child.children && child.children.length && child.children
-        if (child.interactive) {
-          target = child
-          if (children) queue = children.slice(0)
-          else break
-        } else if (children) queue = queue.concat(children)
+      if (contained && child.interactive) {
+        target = child
+        if (children) queue = children.slice(0)
+        else break
       }
+
+      children && (queue = queue.concat(children))
     }
 
     return target
@@ -152,10 +147,9 @@ export default class extends PIXI.utils.EventEmitter {
 
       if (!child.visible) continue
 
-      child.children &&
-      child.children.length &&
-      child.interactiveChildren &&
-      (queue = queue.concat(child.children))
+      const children = child.interactiveChildren && child.children
+
+      children && (queue = queue.concat(child.children))
 
       const contained = this.contains(point, child)
 

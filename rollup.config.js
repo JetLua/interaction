@@ -1,6 +1,6 @@
 import babel from 'rollup-plugin-babel'
 import common from 'rollup-plugin-commonjs'
-import minify from 'rollup-plugin-babel-minify'
+import {terser} from 'rollup-plugin-terser'
 import resolve from 'rollup-plugin-node-resolve'
 
 export default {
@@ -9,7 +9,7 @@ export default {
     babel(),
     common(),
     resolve(),
-    minify({comments: false})
+    terser({output: {comments: false}})
   ],
   output: [
     {

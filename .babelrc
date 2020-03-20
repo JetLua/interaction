@@ -4,7 +4,6 @@
   ],
 
   "plugins": [
-    "@babel/proposal-private-methods",
     "@babel/proposal-class-properties",
     "@babel/proposal-optional-chaining",
     "@babel/proposal-export-default-from",

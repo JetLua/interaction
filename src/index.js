@@ -91,7 +91,7 @@ export default class extends PIXI.utils.EventEmitter {
   contains(point, node, hitOnly) {
     let ok = false
 
-    if (node.isMask || !node.interactive) return ok
+    if (node.isMask) return ok
 
     if (hitOnly) {
       if (node.hitArea) {
@@ -115,46 +115,38 @@ export default class extends PIXI.utils.EventEmitter {
   }
 
   hitTest(point, root) {
-    let queue = [root || this.renderer._lastObjectRendered]
-    let target = null
+    let queue = [root || this.#renderer._lastObjectRendered]
+    let hit, target
 
     while (queue.length) {
-      const child = queue.pop()
+      const node = queue.pop()
+      if (!node.visible) continue
+      const children = node.interactiveChildren && node.children
+      const contained = this.contains(point, node)
 
-      if (!child.visible) continue
+      contained && (hit = node)
 
-      const children = child.interactiveChildren && child.children
-      const contained = this.contains(point, child) || this.#hit(point, child)
-
-      if (contained && child.interactive) {
-        target = child
-        if (children) queue = children.slice(0)
-        else break
+      if (contained && node.interactive) {
+        target = node
+        queue = []
+        if (children) for (const child of children) {
+          queue.push(child)
+        } else break
       }
 
-      children && (queue = queue.concat(children))
+      if (children) for (const child of children) {
+        queue.push(child)
+      }
+    }
+
+    if (target) return target
+
+    while (hit) {
+      if (hit.interactive) return hit
+      hit = hit.parent
     }
 
     return target
-  }
-
-  // 源于对递归的不信任
-  #hit(point, container) {
-    let queue = [container]
-
-    while (queue.length) {
-      const child = queue.pop()
-
-      if (!child.visible) continue
-
-      const children = child.interactiveChildren && child.children
-
-      children && (queue = queue.concat(child.children))
-
-      const contained = this.contains(point, child)
-
-      if (contained) return true
-    }
   }
 
   handle(ev, node) {

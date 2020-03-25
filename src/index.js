@@ -1,15 +1,14 @@
-const touch = {}
-const event = {}
-const sp = new PIXI.Point()
-const lp = new PIXI.Point()
-const pointerable = 'onpointerdown' in window
 const touchable = 'ontouchstart' in window
+const pointerable = 'onpointerdown' in window
 
 export default class extends PIXI.utils.EventEmitter {
+  #touch = {}
+  #event = {}
   #view = null
   #cursor = null
   #resolution = 1
   #renderer = null
+  #point = new PIXI.Point()
 
   constructor(renderer, opt) {
     super()
@@ -35,28 +34,30 @@ export default class extends PIXI.utils.EventEmitter {
 
   copyEvent(ev) {
     const {changedTouches} = ev
+
+    const point = this.#point
     const renderer = this.#renderer
     const root = renderer._lastObjectRendered
 
     if (changedTouches) {
       for (const touch of changedTouches) {
-        this.mapPositionToPoint(sp, touch.pageX, touch.pageY)
+        this.mapPositionToPoint(point, touch.pageX, touch.pageY)
         event.origin = ev
         event.stopped = ev.cancelBubble
         event.id = touch.identifier
-        event.x = sp.x
-        event.y = sp.y
-        event.target = this.hitTest(sp, root)
+        event.x = point.x
+        event.y = point.y
+        event.target = this.hitTest(point, root)
         this.handle(event, root)
       }
     } else {
-      this.mapPositionToPoint(sp, ev.pageX, ev.pageY)
+      this.mapPositionToPoint(point, ev.pageX, ev.pageY)
       event.origin = ev
       event.stopped = ev.cancelBubble
       event.id = ev.pointerId
-      event.x = sp.x
-      event.y = sp.y
-      event.target = this.hitTest(sp, root)
+      event.x = point.x
+      event.y = point.y
+      event.target = this.hitTest(point, root)
       this.handle(event, root)
     }
   }
@@ -85,24 +86,15 @@ export default class extends PIXI.utils.EventEmitter {
     this.copyEvent(ev)
   }
 
-  /**
-   * @param {boolean} hitOnly - 只验证 hitArea
-   */
-  contains(point, node, hitOnly) {
+  contains(point, node) {
     let ok = false
 
     if (node.isMask) return ok
 
-    if (hitOnly) {
-      if (node.hitArea) {
-        node.worldTransform.applyInverse(point, lp)
-        return node.hitArea.contains(point)
-      } else return true
-    }
-
     if (node.hitArea) {
-      node.worldTransform.applyInverse(point, lp)
-      ok = node.hitArea.contains(lp.x, lp.y)
+      const p = this.#point
+      node.worldTransform.applyInverse(point, p)
+      ok = node.hitArea.contains(p.x, p.y)
     } else if (node.containsPoint) {
       ok = node.containsPoint(point)
     }
@@ -166,17 +158,17 @@ export default class extends PIXI.utils.EventEmitter {
     // after normally dispatch
     if (type === 'pointermove' && last !== target) {
       // enter current
-      let ne = {...ev}
-      ne.type = 'pointerenter'
-      this.dispatch(ne)
+      let clone = {...ev}
+      clone.type = 'pointerenter'
+      this.dispatch(clone)
 
       if (!last) return
 
       // out last
-      ne = {...ev}
-      ne.type = 'pointerout'
-      ne.target = last
-      this.dispatch(ne)
+      clone = {...ev}
+      clone.type = 'pointerout'
+      clone.target = last
+      this.dispatch(clone)
     }
 
     if (type === 'pointerup') {
@@ -185,15 +177,15 @@ export default class extends PIXI.utils.EventEmitter {
       delete touch[id]
 
       if (last && last !== target) {
-        const ne = {...ev}
-        ne.type = 'pointerupoutside'
-        ne.target = last
-        this.dispatch(ne)
+        const clone = {...ev}
+        clone.type = 'pointerupoutside'
+        clone.target = last
+        this.dispatch(clone)
       } else if (last === target) {
-        const ne = {...ev}
-        ne.type = 'tap'
-        ne.target = target
-        this.dispatch(ne)
+        const clone = {...ev}
+        clone.type = 'tap'
+        clone.target = target
+        this.dispatch(clone)
       }
     }
 

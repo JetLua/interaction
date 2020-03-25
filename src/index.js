@@ -36,6 +36,7 @@ export default class extends PIXI.utils.EventEmitter {
     const {changedTouches} = ev
 
     const point = this.#point
+    const event = this.#event
     const renderer = this.#renderer
     const root = renderer._lastObjectRendered
 
@@ -63,24 +64,28 @@ export default class extends PIXI.utils.EventEmitter {
   }
 
   onDown(ev) {
+    const event = this.#event
     event.target = null
     event.type = 'pointerdown'
     this.copyEvent(ev)
   }
 
   onUp(ev) {
+    const event = this.#event
     event.target = null
     event.type = 'pointerup'
     this.copyEvent(ev)
   }
 
   onMove(ev) {
+    const event = this.#event
     event.target = null
     event.type = 'pointermove'
     this.copyEvent(ev)
   }
 
   onCancel(ev) {
+    const event = this.#event
     event.target = null
     event.type = 'pointercancel'
     this.copyEvent(ev)
@@ -88,8 +93,6 @@ export default class extends PIXI.utils.EventEmitter {
 
   contains(point, node) {
     let ok = false
-
-    if (node.isMask) return ok
 
     if (node.hitArea) {
       const p = this.#point
@@ -112,7 +115,9 @@ export default class extends PIXI.utils.EventEmitter {
 
     while (queue.length) {
       const node = queue.pop()
-      if (!node.visible) continue
+
+      if (!node.visible || node.isMask) continue
+
       const children = node.interactiveChildren && node.children
       const contained = this.contains(point, node)
 
@@ -140,6 +145,7 @@ export default class extends PIXI.utils.EventEmitter {
   handle(ev, node) {
     if (!node || !node.visible) return
 
+    const touch = this.#touch
     const {id, target, type} = ev
 
     touch[id] = touch[id] || {}
@@ -152,7 +158,7 @@ export default class extends PIXI.utils.EventEmitter {
 
     // set custom cursor
     if (type === 'pointermove' && last !== target) {
-      this.#view.style.cursor = target && target.cursor || this.#cursor
+      this.#view.style.cursor = target?.cursor || this.#cursor
     }
 
     // after normally dispatch

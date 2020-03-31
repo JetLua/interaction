@@ -15,13 +15,13 @@ export default {
     {
       file: 'dist/interaction.min.js',
       format: 'umd',
-      name: 'interaction',
+      name: 'Interaction',
       sourcemap: true
     },
     {
       file: 'dist/interaction.es.js',
       format: 'esm',
-      name: 'interaction',
+      name: 'Interaction',
       sourcemap: true
     }
   ]

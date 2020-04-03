@@ -9,6 +9,7 @@ export default class extends PIXI.utils.EventEmitter {
   #resolution = 1
   #renderer = null
   #point = new PIXI.Point()
+  #local = new PIXI.Point()
 
   constructor(renderer, opt) {
     super()
@@ -95,7 +96,7 @@ export default class extends PIXI.utils.EventEmitter {
     let ok = false
 
     if (node.hitArea) {
-      const p = this.#point
+      const p = this.#local
       node.worldTransform.applyInverse(point, p)
       ok = node.hitArea.contains(p.x, p.y)
     } else if (node.containsPoint) {

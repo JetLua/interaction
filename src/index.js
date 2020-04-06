@@ -124,10 +124,21 @@ export default class extends PIXI.utils.EventEmitter {
 
       contained && (hit = node)
 
-      if (contained && node.interactive) {
-        target = node
-        if (children) queue = children.slice()
-        else break
+      if (contained) {
+        if (node.interactive) {
+          target = node
+          if (children) queue = children.slice()
+          else break
+        } else {
+          let parent = node.parent
+          while (parent) {
+            if (parent.interactive) {
+              target = parent
+              break
+            }
+            parent = parent.parent
+          }
+        }
       }
 
       if (children) for (const child of children) queue.push(child)

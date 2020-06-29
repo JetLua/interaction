@@ -132,10 +132,7 @@ export default class extends PIXI.utils.EventEmitter {
         } else {
           let parent = node.parent
           while (parent) {
-            if (parent.interactive) {
-              target = parent
-              break
-            }
+            if (parent.interactive) return parent
             parent = parent.parent
           }
         }
@@ -157,16 +154,19 @@ export default class extends PIXI.utils.EventEmitter {
   handle(ev, node) {
     if (!node || !node.visible) return
 
-    const touch = this.#touch
+    this.dispatch(ev)
+
+    if (ev.stopped) return
+
     const {id, target, type} = ev
+
+    const touch = this.#touch
 
     touch[id] = touch[id] || {}
 
     const last = touch[id][type]
 
     touch[id][type] = target
-
-    this.dispatch(ev)
 
     // set custom cursor
     if (type === 'pointermove' && last !== target) {

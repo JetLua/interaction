@@ -111,44 +111,35 @@ export default class extends PIXI.utils.EventEmitter {
   }
 
   hitTest(point, root) {
-    let queue = [root || this.#renderer._lastObjectRendered]
     let hit, target
+    let queue = [root || this.#renderer._lastObjectRendered]
 
     while (queue.length) {
       const node = queue.pop()
 
-      if (!node.visible || node.isMask) continue
+      if (!node || !node.visible || node.isMask) continue
 
       const children = node.interactiveChildren && node.children
       const contained = this.contains(point, node)
 
-      contained && (hit = node)
-
       if (contained) {
-        if (node.interactive) {
-          target = node
-          if (children) queue = children.slice()
-          else break
-        } else {
-          let parent = node.parent
-          while (parent) {
-            if (parent.interactive) return parent
-            parent = parent.parent
-          }
+        hit = node
+        if (children) {
+          queue = children.slice()
+          continue
         }
+        break
       }
 
       if (children) for (const child of children) queue.push(child)
     }
 
-    if (target) return target
+    target = hit
 
     while (hit) {
-      if (hit.interactive) return hit
+      if (hit.interactive) return target
       hit = hit.parent
     }
-
-    return target
   }
 
   handle(ev, node) {

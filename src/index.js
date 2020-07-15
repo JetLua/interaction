@@ -111,7 +111,7 @@ export default class extends PIXI.utils.EventEmitter {
   }
 
   hitTest(point, root) {
-    let hit, target
+    let hit
     let queue = [root || this.#renderer._lastObjectRendered]
 
     while (queue.length) {
@@ -134,10 +134,8 @@ export default class extends PIXI.utils.EventEmitter {
       if (children) for (const child of children) queue.push(child)
     }
 
-    target = hit
-
     while (hit) {
-      if (hit.interactive) return target
+      if (hit.interactive) return hit
       hit = hit.parent
     }
   }

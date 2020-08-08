@@ -149,7 +149,8 @@ export default class extends PIXI.utils.EventEmitter {
 
     this.dispatch(ev)
 
-    if (ev.stopped) return
+    /** v1.2.3 */
+    // if (ev.stopped) return
 
     const {id, target, type} = ev
 

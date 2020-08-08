@@ -67,6 +67,7 @@ export default class extends PIXI.utils.EventEmitter {
   onDown(ev) {
     const event = this.#event
     event.target = null
+    event.stopped = false
     event.type = 'pointerdown'
     this.copyEvent(ev)
   }
@@ -74,6 +75,7 @@ export default class extends PIXI.utils.EventEmitter {
   onUp(ev) {
     const event = this.#event
     event.target = null
+    event.stopped = false
     event.type = 'pointerup'
     this.copyEvent(ev)
   }
@@ -81,6 +83,7 @@ export default class extends PIXI.utils.EventEmitter {
   onMove(ev) {
     const event = this.#event
     event.target = null
+    event.stopped = false
     event.type = 'pointermove'
     this.copyEvent(ev)
   }
@@ -88,6 +91,7 @@ export default class extends PIXI.utils.EventEmitter {
   onCancel(ev) {
     const event = this.#event
     event.target = null
+    event.stopped = false
     event.type = 'pointercancel'
     this.copyEvent(ev)
   }

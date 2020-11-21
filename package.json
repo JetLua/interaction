@@ -37,8 +37,8 @@
     "@babel/preset-env": "^7.12.1",
     "@babel/runtime": "^7.12.1",
     "@babel/runtime-corejs3": "^7.12.1",
-    "@rollup/plugin-commonjs": "^15.1.0",
-    "@rollup/plugin-node-resolve": "^9.0.0",
+    "@rollup/plugin-commonjs": "^16.0.0",
+    "@rollup/plugin-node-resolve": "^10.0.0",
     "rollup": "^2.32.1",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-terser": "^7.0.2"

@@ -139,6 +139,8 @@ export default class extends PIXI.utils.EventEmitter {
         break
       }
 
+      if (node._mask) continue
+
       if (children) for (const child of children) queue.push(child)
     }
 

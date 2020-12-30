@@ -11,18 +11,25 @@ export default {
     resolve(),
     terser({output: {comments: false}})
   ],
+  external: ['pixi.js'],
   output: [
     {
       file: 'dist/interaction.min.js',
       format: 'umd',
       name: 'Interaction',
-      sourcemap: true
+      sourcemap: true,
+      globals: {
+        'pixi.js': 'PIXI'
+      }
     },
     {
       file: 'dist/interaction.es.js',
       format: 'esm',
       name: 'Interaction',
-      sourcemap: true
+      sourcemap: true,
+      globals: {
+        'pixi.js': 'PIXI'
+      }
     }
   ]
 }

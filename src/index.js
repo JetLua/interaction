@@ -1,3 +1,5 @@
+import * as PIXI from 'pixi.js'
+
 const touchable = 'ontouchstart' in window
 const pointerable = 'onpointerdown' in window
 

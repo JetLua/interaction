@@ -45,5 +45,8 @@
   },
   "peerDependencies": {
     "pixi.js": "latest"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }

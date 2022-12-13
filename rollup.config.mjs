@@ -1,7 +1,12 @@
-import babel from 'rollup-plugin-babel'
-import {terser} from 'rollup-plugin-terser'
+import {fileURLToPath} from 'url'
+import babel from '@rollup/plugin-babel'
+import terser from '@rollup/plugin-terser'
 import common from '@rollup/plugin-commonjs'
 import resolve from '@rollup/plugin-node-resolve'
+
+const __filename = fileURLToPath(import.meta.url)
+
+global['__filename'] = __filename
 
 export default {
   input: 'src/index.js',

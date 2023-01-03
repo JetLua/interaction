@@ -4,30 +4,30 @@ const touchable = 'ontouchstart' in window
 const pointerable = 'onpointerdown' in window
 
 export default class extends PIXI.utils.EventEmitter {
-  #touch = {}
-  #event = {}
-  #view = null
-  #cursor = null
-  #resolution = 1
-  #renderer = null
-  #point = new PIXI.Point()
-  #local = new PIXI.Point()
+  _touch = {}
+  _event = {}
+  _view = null
+  _cursor = null
+  _resolution = 1
+  _renderer = null
+  _point = new PIXI.Point()
+  _local = new PIXI.Point()
 
   constructor(renderer, opt) {
     super()
 
-    this.#renderer = renderer
-    this.#view = renderer.view
-    this.#view.style.touchAction = 'none'
-    this.#resolution = renderer.resolution
-    this.#cursor = renderer.view.style.cursor
+    this._renderer = renderer
+    this._view = renderer.view
+    this._view.style.touchAction = 'none'
+    this._resolution = renderer.resolution
+    this._cursor = renderer.view.style.cursor
 
     this.addEvents()
   }
 
   mapPositionToPoint(point, x, y) {
-    const view = this.#view
-    const resolution = this.#resolution
+    const view = this._view
+    const resolution = this._resolution
     const resolutionMultiplier = 1 / resolution
     const rect = view.parentElement ? view.getBoundingClientRect() : {x: 0, y: 0, width: 0, height: 0}
 
@@ -38,9 +38,9 @@ export default class extends PIXI.utils.EventEmitter {
   copyEvent(ev) {
     const {changedTouches} = ev
 
-    const point = this.#point
-    const event = this.#event
-    const renderer = this.#renderer
+    const point = this._point
+    const event = this._event
+    const renderer = this._renderer
     const root = renderer._lastObjectRendered
 
     if (changedTouches) {
@@ -67,7 +67,7 @@ export default class extends PIXI.utils.EventEmitter {
   }
 
   onDown(ev) {
-    const event = this.#event
+    const event = this._event
     event.target = null
     event.stopped = false
     event.currentTarget = null
@@ -76,7 +76,7 @@ export default class extends PIXI.utils.EventEmitter {
   }
 
   onUp(ev) {
-    const event = this.#event
+    const event = this._event
     event.target = null
     event.stopped = false
     event.currentTarget = null
@@ -85,7 +85,7 @@ export default class extends PIXI.utils.EventEmitter {
   }
 
   onMove(ev) {
-    const event = this.#event
+    const event = this._event
     event.target = null
     event.stopped = false
     event.currentTarget = null
@@ -94,7 +94,7 @@ export default class extends PIXI.utils.EventEmitter {
   }
 
   onCancel(ev) {
-    const event = this.#event
+    const event = this._event
     event.target = null
     event.stopped = false
     event.currentTarget = null
@@ -106,7 +106,7 @@ export default class extends PIXI.utils.EventEmitter {
     let ok = false
 
     if (node.hitArea) {
-      const p = this.#local
+      const p = this._local
       node.worldTransform.applyInverse(point, p)
       ok = node.hitArea.contains(p.x, p.y)
     } else if (node.containsPoint) {
@@ -122,7 +122,7 @@ export default class extends PIXI.utils.EventEmitter {
 
   hitTest(point, root) {
     let hit
-    let queue = [root || this.#renderer._lastObjectRendered]
+    let queue = [root || this._renderer._lastObjectRendered]
 
     while (queue.length) {
       const node = queue.pop()
@@ -162,7 +162,7 @@ export default class extends PIXI.utils.EventEmitter {
 
     const {id, target, type} = ev
 
-    const touch = this.#touch
+    const touch = this._touch
 
     touch[id] = touch[id] || {}
 
@@ -172,7 +172,7 @@ export default class extends PIXI.utils.EventEmitter {
 
     // set custom cursor
     if (type === 'pointermove' && last !== target) {
-      this.#view.style.cursor = target?.cursor || this.#cursor
+      this._view.style.cursor = target?.cursor || this._cursor
     }
 
     // after normally dispatch
@@ -226,7 +226,7 @@ export default class extends PIXI.utils.EventEmitter {
   }
 
   addEvents() {
-    const view = this.#view
+    const view = this._view
     if (pointerable) {
       view.addEventListener('pointerdown', this.onDown.bind(this))
       view.addEventListener('pointerup', this.onUp.bind(this))

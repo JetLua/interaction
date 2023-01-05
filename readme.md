@@ -64,7 +64,7 @@ sprite.on('pointerup', ev => {})
 */
 ```
 
-## Supports PointerEvents like css
+## Support pointer-events like CSS
 
 ```ts
 interface Sprite extends PIXI.Sprite {

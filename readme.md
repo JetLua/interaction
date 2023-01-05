@@ -28,7 +28,27 @@ plugins: [
 ```js
 import Interaction from '@iro/interaction'
 
+// pixi.js@5
 PIXI.Renderer.registerPlugin('interaction', Interaction)
+
+// pixi.js@6
+// remove default interaction extensions
+for (const x in PIXI.extensions._queue) {
+  for (const ext of PIXI.extensions._queue[x]) {
+    if (ext.name === 'interaction') {
+      PIXI.extensions.remove(ext)
+    }
+  }
+}
+
+// add @iro/interaction
+PIXI.extensions.add(
+  {
+    name: 'interaction',
+    ref: Interaction,
+    type: [PIXI.ExtensionType.RendererPlugin, PIXI.ExtensionType.CanvasRendererPlugin]
+  }
+)
 
 renderer.plugins.interaction.on('pointerdown', ev => {})
 sprite.on('pointerup', ev => {})

@@ -63,3 +63,20 @@ sprite.on('pointerup', ev => {})
  * - pointerupoutside
 */
 ```
+
+## Supports PointerEvents like css
+
+```ts
+interface Sprite extends PIXI.Sprite {
+  pointerEvents?: 'auto' | 'none'
+}
+
+const a: Sprite = new PIXI.Sprite(texture)
+a.pointerEvents = 'none'
+
+const b: Sprite = new PIXI.Sprite(texture)
+b.interactive = true
+b.on('pointerdown', console.log) // output
+
+stage.addChild(b, a)
+```

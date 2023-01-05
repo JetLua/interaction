@@ -129,16 +129,20 @@ export default class extends PIXI.utils.EventEmitter {
 
       if (!node || !node.visible || node.isMask) continue
 
-      const children = node.interactiveChildren && node.children
+      const children = node.interactiveChildren && node.children?.length && node.children
       const contained = this.contains(point, node)
 
       if (contained) {
-        hit = node
+        const interactive = node.pointerEvents !== 'none'
+
+        if (interactive) hit = node
+
         if (children) {
           queue = children.slice()
           continue
         }
-        break
+
+        if (interactive) break
       }
 
       if (node._mask) continue

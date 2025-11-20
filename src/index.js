@@ -1,7 +1,13 @@
+// @ts-nocheck
 import * as PIXI from 'pixi.js'
 
-const touchable = 'ontouchstart' in window
-const pointerable = 'onpointerdown' in window
+let touchable = false
+let pointerable = false
+
+if (typeof window !== 'undefined') {
+  touchable = 'ontouchstart' in window
+  pointerable = 'onpointerdown' in window
+}
 
 export default class extends PIXI.utils.EventEmitter {
   _touch = {}
@@ -90,6 +96,15 @@ export default class extends PIXI.utils.EventEmitter {
     event.stopped = false
     event.currentTarget = null
     event.type = 'pointermove'
+    this.copyEvent(ev)
+  }
+
+  onClick(ev) {
+    const event = this._event
+    event.target = null
+    event.stopped = false
+    event.currentTarget = null
+    event.type = 'click'
     this.copyEvent(ev)
   }
 
@@ -212,7 +227,6 @@ export default class extends PIXI.utils.EventEmitter {
         this.dispatch(clone)
       }
     }
-
   }
 
   dispatch(ev) {
@@ -229,22 +243,65 @@ export default class extends PIXI.utils.EventEmitter {
     this.emit(ev.type, ev)
   }
 
+  _onDown = undefined
+  _onUp = undefined
+  _onMove = undefined
+  _onCancel = undefined
+  _onClick = undefined
+
   addEvents() {
     const view = this._view
+
+    this._onClick = this.onClick.bind(this)
+    view.addEventListener('click', this._onClick)
+
     if (pointerable) {
-      view.addEventListener('pointerdown', this.onDown.bind(this))
-      view.addEventListener('pointerup', this.onUp.bind(this))
-      view.addEventListener('pointermove', this.onMove.bind(this))
-      view.addEventListener('pointercancel', this.onCancel.bind(this))
+      this._onDown = this.onDown.bind(this)
+      this._onUp = this.onUp.bind(this)
+      this._onMove = this.onMove.bind(this)
+      this._onCancel = this.onCancel.bind(this)
+      view.addEventListener('pointerdown', this._onDown)
+      view.addEventListener('pointerup', this._onUp)
+      view.addEventListener('pointermove', this._onMove)
+      view.addEventListener('pointercancel', this._onCancel)
     } else if (touchable) {
-      view.addEventListener('touchstart', this.onDown.bind(this))
-      view.addEventListener('touchend', this.onUp.bind(this))
-      view.addEventListener('touchmove', this.onMove.bind(this))
-      view.addEventListener('touchcancel', this.onCancel.bind(this))
+      this._onDown = this.onDown.bind(this)
+      this._onUp = this.onUp.bind(this)
+      this._onMove = this.onMove.bind(this)
+      this._onCancel = this.onCancel.bind(this)
+      view.addEventListener('touchstart', this._onDown)
+      view.addEventListener('touchend', this._onUp)
+      view.addEventListener('touchmove', this._onMove)
+      view.addEventListener('touchcancel', this._onCancel)
     } else {
-      view.addEventListener('mousedown', this.onDown.bind(this))
-      view.addEventListener('mouseup', this.onUp.bind(this))
-      view.addEventListener('mousemove', this.onMove.bind(this))
+      this._onDown = this.onDown.bind(this)
+      this._onUp = this.onUp.bind(this)
+      this._onMove = this.onMove.bind(this)
+      view.addEventListener('mousedown', this._onDown)
+      view.addEventListener('mouseup', this._onUp)
+      view.addEventListener('mousemove', this._onMove)
+    }
+
+  }
+
+  destroy() {
+    const view = this._view
+    this._view = undefined
+    view.removeEventListener('click', this._onClick)
+    if (pointerable) {
+      view.removeEventListener('pointerdown', this._onDown)
+      view.removeEventListener('pointerup', this._onUp)
+      view.removeEventListener('pointermove', this._onMove)
+      view.removeEventListener('pointercancel', this._onCancel)
+    } else if (touchable) {
+      view.removeEventListener('touchstart', this._onDown)
+      view.removeEventListener('touchend', this._onUp)
+      view.removeEventListener('touchmove', this._onMove)
+      view.removeEventListener('touchcancel', this._onCancel)
+    } else {
+      view.removeEventListener('mousedown', this._onDown)
+      view.removeEventListener('mouseup', this._onUp)
+      view.removeEventListener('mousemove', this._onMove)
     }
   }
 }

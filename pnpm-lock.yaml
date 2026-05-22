@@ -34,10 +34,10 @@ importers:
         specifier: ^7.20.2
         version: 7.20.2(@babel/core@7.20.7)
       '@babel/runtime':
-        specifier: ^7.26.10
+        specifier: ^7.20.7
         version: 7.26.10
       '@babel/runtime-corejs3':
-        specifier: ^7.26.10
+        specifier: ^7.20.7
         version: 7.26.10
       '@rollup/plugin-babel':
         specifier: ^6.0.3
@@ -52,7 +52,7 @@ importers:
         specifier: ^0.2.1
         version: 0.2.1(rollup@3.30.0)
       rollup:
-        specifier: ^3.30.0
+        specifier: ^3.9.1
         version: 3.30.0
 
 packages:

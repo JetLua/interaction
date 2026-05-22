@@ -34,10 +34,10 @@ importers:
         specifier: ^7.20.2
         version: 7.20.2(@babel/core@7.20.7)
       '@babel/runtime':
-        specifier: ^7.20.7
+        specifier: ^7.26.10
         version: 7.26.10
       '@babel/runtime-corejs3':
-        specifier: ^7.20.7
+        specifier: ^7.26.10
         version: 7.26.10
       '@rollup/plugin-babel':
         specifier: ^6.0.3
@@ -52,7 +52,7 @@ importers:
         specifier: ^0.2.1
         version: 0.2.1(rollup@3.30.0)
       rollup:
-        specifier: ^3.9.1
+        specifier: ^3.30.0
         version: 3.30.0
 
 packages:
@@ -1315,8 +1315,8 @@ packages:
     resolution: {integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==}
     hasBin: true
 
-  serialize-javascript@6.0.0:
-    resolution: {integrity: sha512-Qr3TosvguFt8ePWqsvRfrKyQXIiW+nGbYpy8XK24NQHE83caxWt+mIymTT19DGFbNWNLfEwsrkSmN64lVWB9ag==}
+  serialize-javascript@6.0.2:
+    resolution: {integrity: sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==}
 
   smob@0.0.6:
     resolution: {integrity: sha512-V21+XeNni+tTyiST1MHsa84AQhT1aFZipzPpOFAVB8DkHzwJyjjAmt9bgwnuZiZWnIbMo2duE29wybxv/7HWUw==}
@@ -2489,7 +2489,7 @@ snapshots:
 
   '@rollup/plugin-terser@0.2.1(rollup@3.30.0)':
     dependencies:
-      serialize-javascript: 6.0.0
+      serialize-javascript: 6.0.2
       smob: 0.0.6
       terser: 5.16.1
     optionalDependencies:
@@ -2778,7 +2778,7 @@ snapshots:
 
   semver@6.3.0: {}
 
-  serialize-javascript@6.0.0:
+  serialize-javascript@6.0.2:
     dependencies:
       randombytes: 2.1.0
 
